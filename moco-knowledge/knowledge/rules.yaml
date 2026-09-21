@@ -1,0 +1,202 @@
+# Rules for building Moco workflows.
+#
+#   must    — hard rules; breaking one is a bug the reviewer blocks on.
+#   should  — strong guidance; the reviewer flags it but does not block.
+#   retired — kept on purpose so old wrong rules cannot creep back in.
+#
+# Each rule: id, rule (ONE line), check (how to test it mechanically), and evidence.
+#
+# Evidence is either:
+#   seen_in: [<demo slugs>]   observed in real specs — the strongest kind
+#   source:  <where it came from>   stated repo policy or a schema fact
+# A rule with neither is not a rule yet; it belongs in learnings until it earns evidence.
+#
+# Keep rules terse. The how and the why live in the relevant block's "## Watch out",
+# never here. If a rule cannot be said in one line it is probably two rules, or a block.
+#
+# This file is maintained by the moco-knowledge-curator agent. Entries are never
+# hard-deleted — wrong ones move to `retired` with a reason.
+
+must:
+  - id: expressions-in-double-braces
+    rule: Every Python expression is wrapped in {{ }}; a bare expression is a literal string.
+    check: "no output_data value contains Python syntax (call, comprehension, operator) outside {{ }}"
+    source: "moco-examples/CLAUDE.md; building-moco-workflow SKILL.md Critical Rules"
+    seen_in: [moco-workflow-demo]
+
+  - id: activity-timeouts-under-retry-policy
+    rule: An activity's timeout and retry settings go under retry_policy — timeout_sec and max_retry_attempts are not activity fields.
+    check: "no activity has a direct timeout_sec or max_retry_attempts key; they appear under retry_policy (wait_for and state_machine DO take a top-level timeout_sec)"
+    source: "wfspec schema — ActivityRecord has no timeout_sec; RetryPolicy has timeout_sec/max_attempts/etc. Verified 2026-09-15"
+    seen_in: [k8s-demo]
+
+  - id: parallel-requires-join-type
+    rule: Every parallel block sets join_type, and so does every parallel iteration.
+    check: "each parallel: has a join_type sibling; each iteration with iter_type: parallel has join_type"
+    source: "wfspec schema — ParallelRecord.required = [join_type, elements]"
+    seen_in: [moco-workflow-demo, ai-agent-demo, sre-incident-agent]
+
+  - id: abort-type-is-literal
+    rule: abort.type is one of abort/terminate/raise/break/break_iteration as a literal — gate the abort with condition:, never with an expression in type:.
+    check: "no abort type: value contains {{ ; every conditional abort uses condition:"
+    seen_in: [moco-workflow-demo, task-manager, trade-simulator]
+
+  - id: activity-type-must-exist
+    rule: "Every activity type: must appear in the wfspec schema's ActivityType enum — confirm it, never infer a plausible name."
+    check: "list-activities.sh --exists <type> returns EXISTS for every activity in the spec"
+    source: "wfspec schema — $defs.ActivityType.enum (182 types); verified 2026-09-15"
+    seen_in: []
+    note: >-
+      An invalid activity type does NOT produce an error naming the activity. Because body is a
+      union of the 13 statement types, one bad type makes the whole union fail and the validator
+      reports every branch it tried at every level up to /body — 'Missing required property:
+      transform at /body', 'Unknown property: sequence at /body', and so on. sequence is not
+      actually unknown and /body is not actually the problem. Confirmed empirically 2026-09-15
+      with a one-statement spec whose only fault was type slack.post. This is why the type is
+      confirmed before use rather than after a failure.
+
+  - id: schema-modeline-first-line
+    rule: A wfspec's first line is the # yaml-language-server schema modeline.
+    check: "head -1 of every wfspec yaml matches 'yaml-language-server'"
+    source: "building-moco-workflow SKILL.md Critical Rules"
+    seen_in: [moco-workflow-demo]
+
+  - id: validate-before-run
+    rule: moco validate must pass before offering to run or hand over a wfspec.
+    check: "moco validate <file> exits 0"
+    source: "moco-examples/CLAUDE.md Instructions; moco-examples/AGENTS.md"
+    seen_in: []
+
+  - id: named-steps-are-testable
+    rule: Give every step a name — an unnamed step cannot be targeted by a unit test.
+    check: "every statement that holds logic worth testing has a name: key"
+    source: "moco-examples/AGENTS.md common practices"
+    seen_in: [task-manager, moco-workflow-demo]
+
+  - id: entity-workflow-deterministic-id
+    rule: An entity workflow sets execute_options.workflow_id to a deterministic id and entity_workflow_args.is_entity_workflow true.
+    check: "every is_entity_workflow: true has a sibling workflow_id built from the entity key, not a random or timestamped value"
+    source: "moco-examples/CLAUDE.md Entity Workflow Patterns"
+    seen_in: [entity-workflow-demo, tech-signal-feed, moco-agent]
+
+  - id: no-inline-secrets
+    rule: Never inline a credential in a wfspec — read it with builtin.secret.get.
+    check: "no literal token/password/api key value in the spec"
+    seen_in: []
+
+  - id: output-data-is-none-safe
+    rule: A transform evaluates every output_data entry eagerly, so any expression touching a nullable value must be None-safe.
+    check: >-
+      For each output_data expression, trace each referenced name to its origin and treat it as
+      nullable if it is (a) an input_data key declared null, (b) a .get() with no default, (c) an
+      activity output field the activity's input/output schema marks optional, or (d) derived
+      from any of those. A nullable value under bare arithmetic, comparison or subscripting is a
+      finding unless coalesced ((x or 0)) or guarded with 'is not None'. Nullability beyond one
+      hop through an activity's schema is best-effort — say so rather than guessing.
+    seen_in: []
+    note: "Seeded from the eager-evaluation semantics of transform, not yet from an observed failure in this corpus. Confirm or narrow as evidence accumulates."
+
+should:
+  - id: prefer-direct-transition
+    rule: Prefer an empty trigger {} direct transition over emitting an event to yourself.
+    check: "no state machine emits to its own event_source_topic from on_enter; self-transitions use trigger: {}"
+    source: "moco-examples/CLAUDE.md State machine patterns"
+    seen_in: [state-machine-demo, entity-workflow-demo, client-server-demo]
+
+  - id: trailing-hash-for-debug
+    rule: Append # to a variable name to stream its value to the CLI; that is the debugging tool, not a log statement.
+    check: "debug output uses a trailing-# variable, not a contrived activity"
+    source: "moco-examples/CLAUDE.md; moco-examples/AGENTS.md"
+    seen_in: [moco-workflow-demo, task-manager]
+
+  - id: underscore-prefix-for-scratch
+    rule: Prefix intermediate or local-only variables with _ to keep the workflow context clean.
+    check: "values only used by the next expression in the same `output_data` are named with a leading _"
+    source: "moco-examples/AGENTS.md common practices"
+    seen_in: [moco-workflow-demo]
+
+  - id: container-scope-modifier
+    rule: Use the @ modifier to keep a variable local to its enclosing composite statement.
+    check: "variables not needed outside a composite carry @"
+    source: "building-moco-workflow SKILL.md Critical Rules"
+    seen_in: [moco-workflow-demo]
+
+  - id: comment-not-description
+    rule: "Prefer a YAML comment over a description: field — description carries runtime overhead."
+    check: "description: appears only where it is consumed; rationale is in comments"
+    source: "moco-examples/AGENTS.md wfspec yaml style"
+    seen_in: []
+
+  - id: kebab-case-step-names
+    rule: Use kebab-case for step names.
+    check: "every name: value is kebab-case"
+    source: "moco-examples/AGENTS.md wfspec yaml style"
+    seen_in: [task-manager, k8s-demo]
+
+  - id: minimal-quoting
+    rule: Quote only when YAML requires it, and use single quotes at the outermost level.
+    check: "no gratuitously quoted scalar; nested quoting is single-outside"
+    source: "moco-examples/AGENTS.md wfspec yaml style"
+    seen_in: []
+
+  - id: comment-freely
+    rule: Comment the workflow — the comments are read by both humans and models.
+    source: "moco-examples/AGENTS.md; k8s-demo header comments"
+    seen_in: [k8s-demo, moco-workflow-demo]
+
+  - id: start-version-1-0-0
+    rule: Start every new wfspec at wfspec_version 1.0.0.
+    check: "a new spec's wfspec_version is 1.0.0"
+    seen_in: [moco-workflow-demo, k8s-demo]
+
+  - id: durable-state-via-builtin-state
+    rule: Anything that must outlive a workflow run goes in builtin.state.*, not an ad-hoc context variable.
+    check: "cross-run state uses builtin.state.set_state/get_state"
+    seen_in: [task-manager, moco-agent]
+
+  - id: continue-as-new-for-unbounded-loops
+    rule: A workflow that loops without a bound needs a continue_as_new_checkpoint so history stays bounded.
+    check: "every unbounded loop or long-lived state machine has a continue_as_new_checkpoint"
+    seen_in: [moco-workflow-demo, moco-agent, tech-signal-feed, trade-simulator]
+
+  - id: child-workflow-as-data-resolver
+    rule: Push a self-contained lookup into a child workflow so it can be tested and reused independently.
+    check: "a data lookup used by more than one step is a child workflow or a function, not repeated inline"
+    source: "moco-examples/AGENTS.md; moco-core/docs/workflow-as-data-resolver.md"
+    seen_in: [moco-workflow-demo]
+
+  - id: phase-specific-retry-posture
+    rule: Split an external system's lifecycle into separate activities so each phase gets its own retry and timeout posture.
+    check: "a multi-phase external operation is not fused into one activity when the phases differ in retry safety"
+    seen_in: [k8s-demo, gdrive-demo]
+
+  - id: test-alongside-each-spec
+    rule: Ship a test next to each spec; unit-test the branching logic, integration-test the wiring.
+    check: "each src/*.yaml has a corresponding tests/*.test.yaml"
+    seen_in: [moco-workflow-demo, task-manager]
+
+  - id: mock-external-calls-in-tests
+    rule: Mock every external call in an integration test so it runs with no network, cluster, or credentials.
+    check: "no test requires live credentials or infrastructure to pass"
+    seen_in: [k8s-demo]
+
+  - id: test-the-boundary
+    rule: When a branch is chosen by a threshold or a sign, unit-test every branch including the boundary, on the step that makes the decision.
+    check: "threshold-driven branching has a case per branch incl. the == boundary, whose step_name is the deciding step, not a downstream consumer"
+    seen_in: []
+
+  - id: test-dates-as-expressions
+    rule: Pass date/datetime test inputs as expression strings ("{{dt.date(Y,M,D)}}"), never as bare YAML dates.
+    check: "every date value in a test's input: is an expression string"
+    seen_in: []
+    note: "Carried over from the CCW knowledge base, where a bare YAML date arrived as a plain string and broke every downstream comparison. Not yet confirmed against Moco's own test runner — verify before promoting to must."
+
+  - id: copy-the-nearest-example
+    rule: Start from the closest existing spec in moco-examples/, never a blank canvas.
+    check: "AUTHORING-TIME ONLY — not reviewable from a spec file. The reviewer marks this not_evaluable; it is a habit for whoever builds, checked by naming the source example in the plan or PR description."
+    seen_in: []
+
+# Retired — do NOT re-add. Kept as a record of what turned out to be wrong.
+# (Empty for now. When a rule is disproved it moves here with a `why`, rather than
+#  being deleted, so it cannot quietly come back in a later curation run.)
+retired: []

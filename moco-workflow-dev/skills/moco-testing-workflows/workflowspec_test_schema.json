@@ -1,0 +1,489 @@
+{
+  "$defs": {
+    "Expect": {
+      "additionalProperties": false,
+      "description": "define expect",
+      "properties": {
+        "output": {
+          "anyOf": [
+            {
+              "items": {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Output"
+        },
+        "terminate": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExpectTerminate"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "error": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExpectError"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "assert": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Assert"
+        }
+      },
+      "title": "Expect",
+      "type": "object"
+    },
+    "ExpectError": {
+      "additionalProperties": false,
+      "description": "define error expect",
+      "properties": {
+        "error_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Error Type"
+        },
+        "error_message": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Error Message"
+        }
+      },
+      "required": [
+        "error_type",
+        "error_message"
+      ],
+      "title": "ExpectError",
+      "type": "object"
+    },
+    "ExpectTerminate": {
+      "additionalProperties": false,
+      "description": "define terminate expect",
+      "properties": {
+        "terminate_message": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Terminate Message"
+        }
+      },
+      "required": [
+        "terminate_message"
+      ],
+      "title": "ExpectTerminate",
+      "type": "object"
+    },
+    "IntegrationTestSuite": {
+      "additionalProperties": false,
+      "description": "define an integration test suite",
+      "properties": {
+        "test_type": {
+          "const": "integration-test",
+          "title": "Test Type",
+          "type": "string"
+        },
+        "wfspec": {
+          "$ref": "#/$defs/WfspecInfo"
+        },
+        "test_cases": {
+          "items": {
+            "$ref": "#/$defs/TestCase"
+          },
+          "title": "Test Cases",
+          "type": "array"
+        },
+        "test_data": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Test Data"
+        },
+        "skip": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Skip"
+        },
+        "verbose": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Verbose"
+        }
+      },
+      "required": [
+        "test_type",
+        "wfspec",
+        "test_cases"
+      ],
+      "title": "IntegrationTestSuite",
+      "type": "object"
+    },
+    "Mock": {
+      "additionalProperties": false,
+      "description": "define a mock for a wfspec step",
+      "properties": {
+        "wfspec_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Wfspec Name"
+        },
+        "step_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Step Name"
+        },
+        "_raw_output": {
+          "title": "Raw Output"
+        }
+      },
+      "required": [
+        "step_name",
+        "_raw_output"
+      ],
+      "title": "Mock",
+      "type": "object"
+    },
+    "TestCase": {
+      "additionalProperties": false,
+      "description": "define a test case",
+      "properties": {
+        "id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "test case id, required for test case to display in test explorer",
+          "title": "Id"
+        },
+        "input": {
+          "anyOf": [
+            {
+              "items": {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              "type": "array"
+            },
+            {
+              "additionalProperties": true,
+              "type": "object"
+            }
+          ],
+          "title": "Input"
+        },
+        "mocks": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/Mock"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mocks"
+        },
+        "expect": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Expect"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "skip": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Skip"
+        },
+        "verbose": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Verbose"
+        }
+      },
+      "required": [
+        "id",
+        "input",
+        "expect"
+      ],
+      "title": "TestCase",
+      "type": "object"
+    },
+    "UnitTestGroup": {
+      "additionalProperties": false,
+      "description": "define a unit test group",
+      "properties": {
+        "step_name": {
+          "title": "Step Name",
+          "type": "string"
+        },
+        "test_cases": {
+          "items": {
+            "$ref": "#/$defs/TestCase"
+          },
+          "title": "Test Cases",
+          "type": "array"
+        },
+        "skip": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Skip"
+        },
+        "verbose": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Verbose"
+        }
+      },
+      "required": [
+        "step_name",
+        "test_cases"
+      ],
+      "title": "UnitTestGroup",
+      "type": "object"
+    },
+    "UnitTestSuite": {
+      "additionalProperties": false,
+      "description": "define a unit test suite",
+      "properties": {
+        "test_type": {
+          "const": "unit-test",
+          "title": "Test Type",
+          "type": "string"
+        },
+        "wfspec": {
+          "$ref": "#/$defs/WfspecInfo"
+        },
+        "test_groups": {
+          "items": {
+            "$ref": "#/$defs/UnitTestGroup"
+          },
+          "title": "Test Groups",
+          "type": "array"
+        },
+        "test_data": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Test Data"
+        },
+        "skip": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Skip"
+        },
+        "verbose": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Verbose"
+        }
+      },
+      "required": [
+        "test_type",
+        "wfspec",
+        "test_groups"
+      ],
+      "title": "UnitTestSuite",
+      "type": "object"
+    },
+    "WfspecInfo": {
+      "additionalProperties": false,
+      "description": "define wfspec info",
+      "properties": {
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Name"
+        },
+        "version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Version"
+        },
+        "content": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "WfspecInfo",
+      "type": "object"
+    }
+  },
+  "anyOf": [
+    {
+      "$ref": "#/$defs/IntegrationTestSuite"
+    },
+    {
+      "$ref": "#/$defs/UnitTestSuite"
+    }
+  ],
+  "description": "define a test suite for a workflowspec",
+  "title": "WfspecTestSuite"
+}

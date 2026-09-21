@@ -1,0 +1,9 @@
+{
+  "name": "moco-knowledge",
+  "displayName": "Moco Knowledge",
+  "version": "1.0.0",
+  "description": "The Moco workflow knowledge base plus the curation loop that keeps it sharp — reusable blocks, authoring rules, an example catalog, a curator agent, and an adversarial reviewer",
+  "author": {
+    "name": "Moco"
+  }
+}

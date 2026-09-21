@@ -1,0 +1,9 @@
+{
+  "name": "moco-workflow-dev",
+  "displayName": "Moco Workflow Dev",
+  "version": "1.0.0",
+  "description": "Plan, build, validate, test, and run Moco workflows — feasibility analysis against the real activity catalog, wfspec syntax, the fix loop, and the moco CLI",
+  "author": {
+    "name": "Moco"
+  }
+}

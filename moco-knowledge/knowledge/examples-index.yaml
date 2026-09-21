@@ -1,0 +1,227 @@
+# examples-index.yaml — one entry per workflow example in moco-examples/.
+#
+# This is the catalog the agents match an intent against. "Find me the nearest existing
+# thing to X" is a lookup over what actually exists, matched on `description` — there is
+# deliberately NO archetype/shape taxonomy layered on top, because a taxonomy drifts from
+# reality and forces bad fits.
+#
+# Fields (sparse — omitted when it takes its default):
+#   name                 the example, as humans say it
+#   dir                  the REAL directory under moco-examples/. Must resolve on disk.
+#   spec                 the main wfspec to read first
+#   description          one line: what this workflow does. THIS IS THE MATCH TARGET.
+#   blocks               which knowledge/blocks/*.md it is built from
+#   tests                number of *.test.yaml files (0 = none)
+#   good_starting_point  true when it is a clean thing to copy from
+#   blocks_verified: false   the block list was derived mechanically from activity types
+#                        and statements and has NOT been confirmed against the spec.
+#                        Treat as a hint. Absent = curated and confirmed.
+#   note                 what to know BEFORE copying it. One or two lines; deeper
+#                        detail belongs in the relevant block's "## Watch out".
+#
+# INVARIANT: every `dir` resolves under moco-examples/. Design docs with no spec yet
+# (bmw-copilot, build-moco-workflow) are deliberately absent — a plan is not yet knowledge
+# anyone can copy.
+#
+# Kept current by moco-knowledge-curator, which RECONCILES this file against the real
+# directory listing on every run via scripts/reconcile-examples-index.sh. Anything on disk
+# without an entry gets one, whether or not it relates to that run's learnings, so the
+# catalog converges on its own instead of depending on each author to come back.
+# ---------------------------------------------------------------------------
+
+examples:
+
+  # ---- language tour ------------------------------------------------------
+  - name: Moco Workflow Demo
+    dir: moco-workflow-demo
+    spec: moco-workflow-demo/src/moco-workflow-demo.yaml
+    description: Guided tour of the Moco YAML DSL — roughly 25 small specs, one per language feature, each with a matching test.
+    blocks: [abort-control-flow, parallel-fan-out, child-workflow-modes, functions-and-call, continue-as-new, rules-engine, cross-workflow-events, wfspec-imports, state-machine-transitions, debug-tracing]
+    tests: 27
+    good_starting_point: true
+    note: "The best first read and the best source of a single-feature snippet. Its README orders the specs as a learning path, and each file cross-references its siblings."
+
+  # ---- durable state and task management ----------------------------------
+  - name: Task Manager
+    dir: task-manager
+    spec: task-manager/src/task-manager.yaml
+    description: Task queue built on the persistent state store, moving tasks between submitted/dispatched/processing/deleted namespaces.
+    blocks: [namespace-state-store, abort-control-flow, debug-tracing]
+    tests: 10
+    good_starting_point: true
+    note: "The canonical builtin.state.* architecture — status modelled as namespace membership. Also shows a run-all-tests.yaml aggregator."
+
+  # ---- entity workflows and long-lived processes --------------------------
+  - name: Entity Workflow Demo
+    dir: entity-workflow-demo
+    spec: entity-workflow-demo/src/entity-workflow-demo.yaml
+    description: Parent orchestrator driving several long-lived order-entity state machines via entity_child_workflow start-or-signal.
+    blocks: [entity-workflow, state-machine-transitions, cross-workflow-events]
+    tests: 0
+    good_starting_point: true
+    note: "Two files only — the smallest complete entity-workflow example. Read this before tech-signal-feed or moco-agent, which layer the same pattern under more business logic."
+
+  - name: Tech Signal Feed
+    dir: tech-signal-feed
+    spec: tech-signal-feed/src/tech-signal-feed.yaml
+    description: Two chained long-lived entity workflows (client to signal feed to market-data feed) computing technical-analysis signals.
+    blocks: [entity-workflow, state-machine-transitions, cross-workflow-events, continue-as-new, functions-and-call, namespace-state-store]
+    tests: 1
+    blocks_verified: false
+
+  - name: Trade Simulator
+    dir: trade-simulator
+    spec: trade-simulator/src/trade-simulator.yaml
+    description: Orchestrator bootstrapping a simulated market-data feed, signal handlers and a portfolio manager, all as state machines.
+    blocks: [state-machine-transitions, cross-workflow-events, continue-as-new, abort-control-flow, namespace-state-store]
+    tests: 1
+    blocks_verified: false
+
+  - name: Client Server Demo
+    dir: client-server-demo
+    spec: client-server-demo/src/task-service-client.yaml
+    description: Request/response over events — a client submits work and waits, a server state machine processes it and replies.
+    blocks: [cross-workflow-events, state-machine-transitions]
+    tests: 3
+    good_starting_point: true
+    note: "The reference for correlated request/reply. Note the match_expression on the correlation id — without it a client can consume someone else's reply."
+
+  # ---- state machines and rules -------------------------------------------
+  - name: State Machine Demo
+    dir: state-machine-demo
+    spec: state-machine-demo/src/state-machine-demo.yaml
+    description: State-machine features on their own — event-driven and automatic transitions, shown as order fulfillment and purchase approval.
+    blocks: [state-machine-transitions, cross-workflow-events]
+    tests: 2
+    good_starting_point: true
+
+  - name: Rules Engine Demo
+    dir: rules-engine-demo
+    spec: rules-engine-demo/src/rules-engine-demo.yaml
+    description: Loan approval using forward- and backward-chaining rules with an audit trail.
+    blocks: [rules-engine]
+    tests: 1
+    note: "The fuller rules-engine example. For the minimal one read moco-workflow-demo/src/rules-engine-basics-demo.yaml first."
+
+  # ---- external system integration ----------------------------------------
+  - name: K8s Demo
+    dir: k8s-demo
+    spec: k8s-demo/src/k8s-job-run.yaml
+    description: Runs a one-shot Kubernetes batch Job and reports on it, with a distinct retry posture per phase.
+    blocks: [external-system-lifecycle, abort-control-flow]
+    tests: 1
+    good_starting_point: true
+    note: "The cleanest real integration in the corpus. Splits apply/wait/logs/delete deliberately so each phase retries differently, explains why in its header, and its test is fully mocked — no cluster or credentials needed."
+
+  - name: GDrive Demo
+    dir: gdrive-demo
+    spec: gdrive-demo/src/gdrive-demo.yaml
+    description: Round-trips a file through Google Drive — create folder, upload, list, download, verify, clean up.
+    blocks: [external-system-lifecycle]
+    tests: 1
+
+  - name: Web Crawler Demo
+    dir: web-crawler-demo
+    spec: web-crawler-demo/src/web-crawler-demo.yaml
+    description: Selenium-driven web crawl (navigate, extract text, screenshot) modelled as a state machine.
+    blocks: [state-machine-transitions, external-system-lifecycle]
+    tests: 0
+    blocks_verified: false
+    note: "Uses the selenium family. New browser work should prefer playwright, which has the larger surface."
+
+  - name: RMQ Demo
+    dir: rmq-demo
+    spec: rmq-demo/src/rmq-demo.yaml
+    description: RabbitMQ pub/sub relayed as workflow events — a state machine receives, a separate spec publishes.
+    blocks: [state-machine-transitions, cross-workflow-events]
+    tests: 0
+
+  # ---- AI agents and retrieval --------------------------------------------
+  - name: AI Agent Demo
+    dir: ai-agent-demo
+    spec: ai-agent-demo/multi-agent-research.yaml
+    description: Multi-agent research — decompose a topic, run three specialised research agents in parallel, synthesise a cited report.
+    blocks: [ai-agent-activity, parallel-fan-out]
+    tests: 0
+    good_starting_point: true
+    note: "The clearest parallel fan-out over agents. Single file."
+
+  - name: Claude Agent Demo
+    dir: claude-agent-demo
+    spec: claude-agent-demo/src/claude-agent-demo.yaml
+    description: A full multi-turn Claude Agent SDK loop inside one activity, with tools granted explicitly.
+    blocks: [ai-agent-activity]
+    tests: 0
+    note: "claude_agent.query runs on the dedicated agent worker and can be long-running — budget timeouts accordingly."
+
+  - name: OpenAI Demo
+    dir: openai-demo
+    spec: openai-demo/src/openai-demo.yaml
+    description: Minimal OpenAI chat-completions call, plus a Gemini variant done over http.request.
+    blocks: [ai-agent-activity]
+    tests: 0
+    good_starting_point: true
+    note: "The Gemini variant is a good worked example of the http.request escape hatch standing in for a missing native activity."
+
+  - name: RAG Demo
+    dir: rag-demo
+    spec: rag-demo/src/rag-demo.yaml
+    description: RAG over pgvector with llama_index — index documents, then contrast retrieve-plus-manual-prompt against synthesize.
+    blocks: [ai-agent-activity]
+    tests: 2
+
+  - name: Moco Agent
+    dir: moco-agent
+    spec: moco-agent/src/moco-agent.yaml
+    description: Long-lived question-answering agent — one entity workflow per conversation, routing questions to knowledge domains and answering with citations.
+    blocks: [entity-workflow, cross-workflow-events, continue-as-new, namespace-state-store, ai-agent-activity, parallel-fan-out]
+    tests: 10
+    blocks_verified: false
+    note: "The largest example. Good for seeing the patterns combined, not for a first read."
+
+  - name: Moco Agent Evaluation
+    dir: moco-agent-evaluation
+    spec: moco-agent-evaluation/src/moco-agent-evaluation.yaml
+    description: Evaluation harness for moco-agent — exact-match, LLM-judge and online scoring over a dataset.
+    blocks: [ai-agent-activity, parallel-fan-out]
+    tests: 0
+    blocks_verified: false
+
+  - name: SRE Incident Agent
+    dir: sre-incident-agent
+    spec: sre-incident-agent/src/incident-response-agent.yaml
+    description: Incident response — an AI triage agent classifies severity, then log, metrics and dependency agents run concurrently.
+    blocks: [ai-agent-activity, parallel-fan-out]
+    tests: 0
+
+  - name: Contract Intelligence Agent
+    dir: contract-intelligence-agent
+    spec: contract-intelligence-agent/src/contract-risk-analyzer.yaml
+    description: Legal contract risk analysis — four specialised async child agents (clauses, provisions, financials, compliance) fanned out, then aggregated with a rules engine.
+    blocks: [ai-agent-activity, child-workflow-modes, parallel-fan-out, rules-engine]
+    tests: 0
+    note: "The best example of combining async child workflows with a rules engine to aggregate their findings."
+
+  # ---- mechanics ----------------------------------------------------------
+  - name: Async Activity Demo
+    dir: async-activity-demo
+    spec: async-activity-demo/src/async-activity-demo.yaml
+    description: Activities with async_mode true returning a token, collected later via wait_for or a state-machine transition.
+    blocks: [async-activity-token, cross-workflow-events, state-machine-transitions]
+    tests: 0
+
+  - name: Multi Agent Demo
+    dir: .
+    spec: multi-agent-demo.yaml
+    description: Single-file multi-agent orchestration using emit_event and wait_for for coordination.
+    blocks: [cross-workflow-events, ai-agent-activity]
+    tests: 0
+    blocks_verified: false
+    note: "Lives at the root of moco-examples/, not in its own directory."
+
+  - name: Activity Examples
+    dir: activity-examples
+    description: Not a workflow — sample input_data payloads for exercising single activities with `moco activity run`.
+    blocks: []
+    tests: 0
+    note: "Read these before guessing an activity's input shape; pair with `list-activities.sh --schema <type>`."
