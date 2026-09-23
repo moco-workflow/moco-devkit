@@ -54,7 +54,7 @@ misleading `/body` cascade rather than naming the field.
 
 `wait_for` and `state_machine` **do** take a top-level `timeout_sec`. Activities do not.
 
-182 activity types exist. Confirm one with
+183 activity types exist. Confirm one with
 `moco-planning-workflows/scripts/list-activities.sh --exists <type>`, and read its inputs with
 `--schema <type>`. Do not guess activity input fields.
 

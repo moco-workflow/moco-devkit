@@ -17,9 +17,12 @@ status: active
 
 # Namespace state store
 
-The most-used activity family in the corpus by a wide margin. Eight activities:
+The most-used activity family in the corpus by a wide margin. Nine activities:
 `set_state`, `get_state`, `get_state_with_ts`, `del_state`, `list_states`, `list_namespaces`,
-`update_topic`, `delete_by_topic`.
+`update_topic`, `delete_by_topic`, `delete_namespace`.
+
+Watch out: `delete_by_topic` filters on `topic LIKE`, so it can never match untagged rows —
+`delete_namespace` is the only way to empty a namespace completely.
 
 ## Snippet
 

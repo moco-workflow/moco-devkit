@@ -36,7 +36,7 @@ call with no orchestration is a signal against it.
 ## Step 2 — Map each external system to a real activity
 
 **Never do this from memory.** The wfspec JSON schema is the authoritative inventory —
-182 activity types across 19 families — and this skill ships a script that reads it without
+183 activity types across 19 families — and this skill ships a script that reads it without
 pulling the whole ~8,000-line schema into context:
 
 ```bash
@@ -54,8 +54,8 @@ and the composite statements are wfspec *statements*, so searching the activity 
 
 Two things the map will tell you that are easy to get wrong:
 
-- **75 of the 92 `builtin` activities are `builtin.deploy.*`** platform administration. Ordinary
-  workflows use the other 17 — above all `builtin.state.*` (durable namespaced key/value state,
+- **75 of the 93 `builtin` activities are `builtin.deploy.*`** platform administration. Ordinary
+  workflows use the other 18 — above all `builtin.state.*` (durable namespaced key/value state,
   the single most-used family in the corpus) and `builtin.delay`.
 - **`graphql` has only `subscribe`.** A plain GraphQL query goes over `http.request`.
 

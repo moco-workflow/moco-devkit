@@ -2020,6 +2020,25 @@
           "if": {
             "properties": {
               "type": {
+                "const": "builtin.state.delete_namespace"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "input_data": {
+                "$ref": "#/$defs/activity_input.builtin.state.delete_namespace"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
                 "const": "builtin.state.get_state"
               }
             },
@@ -6667,6 +6686,7 @@
         "builtin.secret.upload",
         "builtin.state.del_state",
         "builtin.state.delete_by_topic",
+        "builtin.state.delete_namespace",
         "builtin.state.get_state",
         "builtin.state.get_state_with_ts",
         "builtin.state.list_namespaces",
@@ -7194,8 +7214,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Include Revoked",
-          "default": false
+          "default": false,
+          "title": "Include Revoked"
         }
       },
       "title": "ApiKeyListInput",
@@ -7220,8 +7240,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Touch",
-          "default": false
+          "default": false,
+          "title": "Touch"
         }
       },
       "required": [
@@ -7314,8 +7334,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Limit",
-          "default": 100
+          "default": 100,
+          "title": "Limit"
         }
       },
       "title": "GetAuditLogsInput",
@@ -8126,8 +8146,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Is Active",
-          "default": true
+          "default": true,
+          "title": "Is Active"
         },
         "deployed_by": {
           "anyOf": [
@@ -8472,8 +8492,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Version Major",
-          "default": 0
+          "default": 0,
+          "title": "Version Major"
         },
         "version_minor": {
           "anyOf": [
@@ -8486,8 +8506,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Version Minor",
-          "default": 0
+          "default": 0,
+          "title": "Version Minor"
         },
         "version_patch": {
           "anyOf": [
@@ -8500,8 +8520,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Version Patch",
-          "default": 0
+          "default": 0,
+          "title": "Version Patch"
         },
         "manifest": {
           "anyOf": [
@@ -8838,8 +8858,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Version Major",
-          "default": 0
+          "default": 0,
+          "title": "Version Major"
         },
         "version_minor": {
           "anyOf": [
@@ -8852,8 +8872,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Version Minor",
-          "default": 0
+          "default": 0,
+          "title": "Version Minor"
         },
         "version_patch": {
           "anyOf": [
@@ -8866,8 +8886,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Version Patch",
-          "default": 0
+          "default": 0,
+          "title": "Version Patch"
         },
         "manifest": {
           "anyOf": [
@@ -9273,8 +9293,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Limit",
-          "default": 100
+          "default": 100,
+          "title": "Limit"
         },
         "offset": {
           "anyOf": [
@@ -9286,8 +9306,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Offset",
-          "default": 0
+          "default": 0,
+          "title": "Offset"
         }
       },
       "title": "UserListInput",
@@ -9368,8 +9388,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Record Login",
-          "default": false
+          "default": false,
+          "title": "Record Login"
         }
       },
       "required": [
@@ -10260,6 +10280,37 @@
       "type": "object",
       "additionalProperties": false
     },
+    "activity_input.builtin.state.delete_namespace": {
+      "description": "Delete every state in a namespace.",
+      "properties": {
+        "namespace": {
+          "title": "Namespace",
+          "type": "string"
+        },
+        "in_global_ns": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "pattern": ".*\\{\\{.*\\}\\}.*"
+            }
+          ],
+          "default": null,
+          "title": "In Global Ns"
+        }
+      },
+      "required": [
+        "namespace"
+      ],
+      "title": "DeleteNamespaceInput",
+      "type": "object",
+      "additionalProperties": false
+    },
     "activity_input.builtin.state.get_state": {
       "properties": {
         "namespace": {
@@ -10691,8 +10742,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Use Claude Code Preset",
-          "default": false
+          "default": false,
+          "title": "Use Claude Code Preset"
         },
         "model": {
           "anyOf": [
@@ -10857,8 +10908,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Relay Thinking",
-          "default": false
+          "default": false,
+          "title": "Relay Thinking"
         },
         "target_workflow_id": {
           "anyOf": [
@@ -10882,8 +10933,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Debug Thinking",
-          "default": false
+          "default": false,
+          "title": "Debug Thinking"
         },
         "debug_tool_input": {
           "anyOf": [
@@ -10895,8 +10946,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Debug Tool Input",
-          "default": false
+          "default": false,
+          "title": "Debug Tool Input"
         },
         "include_transcript": {
           "anyOf": [
@@ -10908,8 +10959,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Include Transcript",
-          "default": false
+          "default": false,
+          "title": "Include Transcript"
         },
         "max_result_chars": {
           "anyOf": [
@@ -11056,8 +11107,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Use Tls",
-          "default": true
+          "default": true,
+          "title": "Use Tls"
         },
         "use_ssl": {
           "anyOf": [
@@ -11069,8 +11120,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Use Ssl",
-          "default": false
+          "default": false,
+          "title": "Use Ssl"
         },
         "timeout": {
           "anyOf": [
@@ -11082,8 +11133,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Timeout",
-          "default": 30
+          "default": 30,
+          "title": "Timeout"
         },
         "from_address": {
           "title": "From Address",
@@ -11311,8 +11362,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Skip If Exists",
-          "default": false
+          "default": false,
+          "title": "Skip If Exists"
         }
       },
       "required": [
@@ -11351,8 +11402,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Permanent",
-          "default": false
+          "default": false,
+          "title": "Permanent"
         }
       },
       "required": [
@@ -11424,8 +11475,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Acknowledge Abuse",
-          "default": false
+          "default": false,
+          "title": "Acknowledge Abuse"
         }
       },
       "required": [
@@ -11523,8 +11574,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Include Trashed",
-          "default": false
+          "default": false,
+          "title": "Include Trashed"
         },
         "page_size": {
           "anyOf": [
@@ -11536,8 +11587,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Page Size",
-          "default": 100
+          "default": 100,
+          "title": "Page Size"
         },
         "page_token": {
           "anyOf": [
@@ -12137,8 +12188,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Force Conflicts",
-          "default": false
+          "default": false,
+          "title": "Force Conflicts"
         },
         "dry_run": {
           "anyOf": [
@@ -12150,8 +12201,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Dry Run",
-          "default": false
+          "default": false,
+          "title": "Dry Run"
         },
         "continue_on_error": {
           "anyOf": [
@@ -12163,8 +12214,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Continue On Error",
-          "default": false
+          "default": false,
+          "title": "Continue On Error"
         },
         "allow_system_namespaces": {
           "anyOf": [
@@ -12176,8 +12227,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Allow System Namespaces",
-          "default": false
+          "default": false,
+          "title": "Allow System Namespaces"
         }
       },
       "required": [
@@ -12257,8 +12308,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Allow Bulk Delete",
-          "default": false
+          "default": false,
+          "title": "Allow Bulk Delete"
         },
         "allow_cluster_scoped": {
           "anyOf": [
@@ -12270,8 +12321,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Allow Cluster Scoped",
-          "default": false
+          "default": false,
+          "title": "Allow Cluster Scoped"
         },
         "allow_system_namespaces": {
           "anyOf": [
@@ -12283,8 +12334,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Allow System Namespaces",
-          "default": false
+          "default": false,
+          "title": "Allow System Namespaces"
         },
         "grace_period_seconds": {
           "anyOf": [
@@ -12323,8 +12374,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Not Found Ok",
-          "default": true
+          "default": true,
+          "title": "Not Found Ok"
         }
       },
       "required": [
@@ -12416,8 +12467,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Timeout Sec",
-          "default": 60
+          "default": 60,
+          "title": "Timeout Sec"
         },
         "max_output_bytes": {
           "anyOf": [
@@ -12430,8 +12481,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Max Output Bytes",
-          "default": 1048576
+          "default": 1048576,
+          "title": "Max Output Bytes"
         }
       },
       "required": [
@@ -12492,8 +12543,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Not Found Ok",
-          "default": false
+          "default": false,
+          "title": "Not Found Ok"
         }
       },
       "required": [
@@ -12550,8 +12601,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "All Namespaces",
-          "default": false
+          "default": false,
+          "title": "All Namespaces"
         },
         "label_selector": {
           "anyOf": [
@@ -12589,8 +12640,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Limit",
-          "default": 500
+          "default": 500,
+          "title": "Limit"
         },
         "continue_token": {
           "anyOf": [
@@ -12675,8 +12726,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Max Pods",
-          "default": 5
+          "default": 5,
+          "title": "Max Pods"
         },
         "container": {
           "anyOf": [
@@ -12701,8 +12752,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Tail Lines",
-          "default": 200
+          "default": 200,
+          "title": "Tail Lines"
         },
         "since_seconds": {
           "anyOf": [
@@ -12731,8 +12782,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Previous",
-          "default": false
+          "default": false,
+          "title": "Previous"
         },
         "timestamps": {
           "anyOf": [
@@ -12744,8 +12795,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Timestamps",
-          "default": false
+          "default": false,
+          "title": "Timestamps"
         },
         "max_bytes": {
           "anyOf": [
@@ -12758,8 +12809,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Max Bytes",
-          "default": 1048576
+          "default": 1048576,
+          "title": "Max Bytes"
         }
       },
       "required": [
@@ -12922,8 +12973,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Deleted",
-          "default": false
+          "default": false,
+          "title": "Deleted"
         },
         "fail_on_conditions": {
           "anyOf": [
@@ -12955,8 +13006,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Poll Interval Sec",
-          "default": 2.0
+          "default": 2.0,
+          "title": "Poll Interval Sec"
         },
         "raise_on_timeout": {
           "anyOf": [
@@ -12968,8 +13019,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Raise On Timeout",
-          "default": true
+          "default": true,
+          "title": "Raise On Timeout"
         }
       },
       "required": [
@@ -13438,8 +13489,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Evaluators",
-          "default": []
+          "default": [],
+          "title": "Evaluators"
         },
         "experiment_name": {
           "anyOf": [
@@ -13672,8 +13723,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Chunk Size",
-          "default": 1024
+          "default": 1024,
+          "title": "Chunk Size"
         },
         "chunk_overlap": {
           "anyOf": [
@@ -13685,8 +13736,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Chunk Overlap",
-          "default": 200
+          "default": 200,
+          "title": "Chunk Overlap"
         },
         "overwrite": {
           "anyOf": [
@@ -13698,8 +13749,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Overwrite",
-          "default": false
+          "default": false,
+          "title": "Overwrite"
         },
         "download_dir": {
           "anyOf": [
@@ -13724,8 +13775,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Metadata",
-          "default": {}
+          "default": {},
+          "title": "Metadata"
         },
         "proxy": {
           "anyOf": [
@@ -13749,8 +13800,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Skip Cert Verify",
-          "default": false
+          "default": false,
+          "title": "Skip Cert Verify"
         }
       },
       "required": [
@@ -13797,8 +13848,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Chunk Size",
-          "default": 1024
+          "default": 1024,
+          "title": "Chunk Size"
         },
         "chunk_overlap": {
           "anyOf": [
@@ -13810,8 +13861,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Chunk Overlap",
-          "default": 200
+          "default": 200,
+          "title": "Chunk Overlap"
         },
         "overwrite": {
           "anyOf": [
@@ -13823,8 +13874,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Overwrite",
-          "default": false
+          "default": false,
+          "title": "Overwrite"
         },
         "metadata": {
           "anyOf": [
@@ -13837,8 +13888,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Metadata",
-          "default": {}
+          "default": {},
+          "title": "Metadata"
         },
         "embed_batch_size": {
           "anyOf": [
@@ -13852,8 +13903,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Embed Batch Size",
-          "default": 64
+          "default": 64,
+          "title": "Embed Batch Size"
         },
         "path": {
           "title": "Path",
@@ -13869,8 +13920,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Recursive",
-          "default": true
+          "default": true,
+          "title": "Recursive"
         },
         "required_extensions": {
           "anyOf": [
@@ -13885,8 +13936,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Required Extensions",
-          "default": []
+          "default": [],
+          "title": "Required Extensions"
         }
       },
       "required": [
@@ -13933,8 +13984,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Chunk Size",
-          "default": 1024
+          "default": 1024,
+          "title": "Chunk Size"
         },
         "chunk_overlap": {
           "anyOf": [
@@ -13946,8 +13997,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Chunk Overlap",
-          "default": 200
+          "default": 200,
+          "title": "Chunk Overlap"
         },
         "overwrite": {
           "anyOf": [
@@ -13959,8 +14010,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Overwrite",
-          "default": false
+          "default": false,
+          "title": "Overwrite"
         },
         "metadata": {
           "anyOf": [
@@ -13973,8 +14024,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Metadata",
-          "default": {}
+          "default": {},
+          "title": "Metadata"
         },
         "embed_batch_size": {
           "anyOf": [
@@ -13988,8 +14039,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Embed Batch Size",
-          "default": 64
+          "default": 64,
+          "title": "Embed Batch Size"
         },
         "auth": {
           "anyOf": [
@@ -14027,8 +14078,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "File Ids",
-          "default": []
+          "default": [],
+          "title": "File Ids"
         },
         "drive_id": {
           "anyOf": [
@@ -14128,8 +14179,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Chunk Size",
-          "default": 1024
+          "default": 1024,
+          "title": "Chunk Size"
         },
         "chunk_overlap": {
           "anyOf": [
@@ -14141,8 +14192,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Chunk Overlap",
-          "default": 200
+          "default": 200,
+          "title": "Chunk Overlap"
         },
         "overwrite": {
           "anyOf": [
@@ -14154,8 +14205,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Overwrite",
-          "default": false
+          "default": false,
+          "title": "Overwrite"
         },
         "metadata": {
           "anyOf": [
@@ -14168,8 +14219,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Metadata",
-          "default": {}
+          "default": {},
+          "title": "Metadata"
         },
         "embed_batch_size": {
           "anyOf": [
@@ -14183,8 +14234,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Embed Batch Size",
-          "default": 64
+          "default": 64,
+          "title": "Embed Batch Size"
         },
         "auth": {
           "anyOf": [
@@ -14242,8 +14293,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Include Directories",
-          "default": []
+          "default": [],
+          "title": "Include Directories"
         },
         "exclude_directories": {
           "anyOf": [
@@ -14258,8 +14309,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Exclude Directories",
-          "default": []
+          "default": [],
+          "title": "Exclude Directories"
         },
         "include_extensions": {
           "anyOf": [
@@ -14274,8 +14325,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Include Extensions",
-          "default": []
+          "default": [],
+          "title": "Include Extensions"
         },
         "exclude_extensions": {
           "anyOf": [
@@ -14290,8 +14341,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Exclude Extensions",
-          "default": []
+          "default": [],
+          "title": "Exclude Extensions"
         },
         "use_parser": {
           "anyOf": [
@@ -14303,8 +14354,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Use Parser",
-          "default": false
+          "default": false,
+          "title": "Use Parser"
         },
         "concurrent_requests": {
           "anyOf": [
@@ -14316,8 +14367,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Concurrent Requests",
-          "default": 5
+          "default": 5,
+          "title": "Concurrent Requests"
         },
         "timeout_sec": {
           "anyOf": [
@@ -14329,8 +14380,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Timeout Sec",
-          "default": 30
+          "default": 30,
+          "title": "Timeout Sec"
         }
       },
       "required": [
@@ -14379,8 +14430,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Chunk Size",
-          "default": 1024
+          "default": 1024,
+          "title": "Chunk Size"
         },
         "chunk_overlap": {
           "anyOf": [
@@ -14392,8 +14443,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Chunk Overlap",
-          "default": 200
+          "default": 200,
+          "title": "Chunk Overlap"
         },
         "overwrite": {
           "anyOf": [
@@ -14405,8 +14456,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Overwrite",
-          "default": false
+          "default": false,
+          "title": "Overwrite"
         },
         "metadata": {
           "anyOf": [
@@ -14419,8 +14470,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Metadata",
-          "default": {}
+          "default": {},
+          "title": "Metadata"
         },
         "embed_batch_size": {
           "anyOf": [
@@ -14434,8 +14485,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Embed Batch Size",
-          "default": 64
+          "default": 64,
+          "title": "Embed Batch Size"
         },
         "url": {
           "title": "Url",
@@ -14473,8 +14524,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Max Depth",
-          "default": 3
+          "default": 3,
+          "title": "Max Depth"
         },
         "limit": {
           "anyOf": [
@@ -14486,8 +14537,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Limit",
-          "default": 50
+          "default": 50,
+          "title": "Limit"
         },
         "url_filter": {
           "anyOf": [
@@ -14511,8 +14562,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Html To Text",
-          "default": true
+          "default": true,
+          "title": "Html To Text"
         }
       },
       "required": [
@@ -14559,8 +14610,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Chunk Size",
-          "default": 1024
+          "default": 1024,
+          "title": "Chunk Size"
         },
         "chunk_overlap": {
           "anyOf": [
@@ -14572,8 +14623,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Chunk Overlap",
-          "default": 200
+          "default": 200,
+          "title": "Chunk Overlap"
         },
         "overwrite": {
           "anyOf": [
@@ -14585,8 +14636,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Overwrite",
-          "default": false
+          "default": false,
+          "title": "Overwrite"
         },
         "metadata": {
           "anyOf": [
@@ -14599,8 +14650,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Metadata",
-          "default": {}
+          "default": {},
+          "title": "Metadata"
         },
         "embed_batch_size": {
           "anyOf": [
@@ -14614,8 +14665,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Embed Batch Size",
-          "default": 64
+          "default": 64,
+          "title": "Embed Batch Size"
         },
         "urls": {
           "anyOf": [
@@ -14679,8 +14730,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Skip Cert Verify",
-          "default": false
+          "default": false,
+          "title": "Skip Cert Verify"
         },
         "html_to_text": {
           "anyOf": [
@@ -14692,8 +14743,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Html To Text",
-          "default": true
+          "default": true,
+          "title": "Html To Text"
         },
         "concurrency": {
           "anyOf": [
@@ -14705,8 +14756,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Concurrency",
-          "default": 10
+          "default": 10,
+          "title": "Concurrency"
         }
       },
       "required": [
@@ -14800,8 +14851,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Top K",
-          "default": 5
+          "default": 5,
+          "title": "Top K"
         },
         "response_mode": {
           "default": "retrieve",
@@ -14823,8 +14874,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Filters",
-          "default": {}
+          "default": {},
+          "title": "Filters"
         },
         "llm_model_info": {
           "anyOf": [
@@ -17072,8 +17123,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Full Page",
           "default": false,
+          "title": "Full Page",
           "description": "Capture full scrollable page"
         },
         "quality": {
@@ -18621,8 +18672,8 @@
               "pattern": ".*\\{\\{.*\\}\\}.*"
             }
           ],
-          "title": "Parse Json",
-          "default": true
+          "default": true,
+          "title": "Parse Json"
         },
         "relay_topic": {
           "anyOf": [

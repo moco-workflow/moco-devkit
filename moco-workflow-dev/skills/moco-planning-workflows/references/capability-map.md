@@ -1,6 +1,6 @@
 # Moco capability map
 
-A human-readable index over the **182 activity types in 19 families** that the engine accepts.
+A human-readable index over the **183 activity types in 19 families** that the engine accepts.
 Use it to form a hypothesis fast; then confirm with the script, which reads the schema:
 
 ```bash
@@ -17,18 +17,18 @@ added — if the script disagrees with this file, the script is right.
 
 ## The families
 
-### `builtin` — 92 types, but read this before reaching in
+### `builtin` — 93 types, but read this before reaching in
 
-**75 of the 92 are `builtin.deploy.*`** — platform administration (apikeys, auth, namespaces,
+**75 of the 93 are `builtin.deploy.*`** — platform administration (apikeys, auth, namespaces,
 packages, users, groups, wfspec versions, deployments). They exist so Moco can administer itself;
 a normal workflow almost never calls them. Reach for them only when the workflow's *subject* is
 the platform.
 
-The 17 that matter for ordinary authoring:
+The 18 that matter for ordinary authoring:
 
 | Sub-family | Types | What it's for |
 |---|---|---|
-| `builtin.state.*` | 8 — `set_state`, `get_state`, `get_state_with_ts`, `del_state`, `list_states`, `list_namespaces`, `update_topic`, `delete_by_topic` | **The workhorse.** Durable key/value state grouped into namespaces. This is how Moco workflows remember anything across steps, runs, or workflows. By far the most-used family in the example corpus. |
+| `builtin.state.*` | 9 — `set_state`, `get_state`, `get_state_with_ts`, `del_state`, `list_states`, `list_namespaces`, `update_topic`, `delete_by_topic`, `delete_namespace` | **The workhorse.** Durable key/value state grouped into namespaces. This is how Moco workflows remember anything across steps, runs, or workflows. By far the most-used family in the example corpus. |
 | `builtin.secret.*` | 4 — `get`, `list`, `upload`, `delete` | Credentials. Never inline a secret in a wfspec. |
 | `builtin.event.*` | 2 — `emit_debug_event`, `emit_metric_event` | Observability. Distinct from the `emit_event` *statement*, which does workflow-to-workflow messaging. |
 | `builtin.*` | 3 — `delay`, `now`, `execute_workflow` | `delay` for timers/backoff (very common); `now` for a deterministic clock; `execute_workflow` to invoke another workflow as an activity. |
